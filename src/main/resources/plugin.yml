@@ -1,0 +1,15 @@
+name: SMCAfkChecker
+version: '${project.version}'
+main: net.simplymc.afkchecker.AfkCheckerPlugin
+api-version: 1.19
+authors: [ Nomad ]
+commands:
+  afkchecker:
+    description: Sets the player as afk
+    permission: afkchecker.reload
+    usage: "Did you mean: /afkchecker reload"
+
+permissions:
+  afkchecker.reload:
+    description: "Allows players to reload afkchecker config"
+    default: op

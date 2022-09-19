@@ -1,0 +1,12 @@
+# Duration people have to be in the same location before being marked as AFK
+afkDuration: 30
+# What gets put behind peoples name in the tab list
+afkSuffix: "AFK"
+# Whether we should send "You've gone AFK" etc. as well as what to send
+sendNotice: true
+afkNotice: "You've gone AFK"
+activeNotice: "You're no longer AFK"
+
+# Advanced
+# The time between afk checks in ticks, 1 seconds = 20 ticks
+checkPeriod: 60
