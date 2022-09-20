@@ -58,10 +58,17 @@ public final class AfkCheckerPlugin extends JavaPlugin implements Listener {
         FileConfiguration config = getConfig();
         this.afkDuration = (long) config.getInt("afkDuration");
         this.afkSuffix = config.getString("afkSuffix");
-        this.taskPeriod = (long) config.getInt("checkPeriod");
         this.sendNotice = config.getBoolean("sendNotice");
         this.afkNotice = config.getString("afkNotice");
         this.activeNotice = config.getString("activeNotice");
+        Long oldTaskPeriod = this.taskPeriod;
+        this.taskPeriod = (long) config.getInt("checkPeriod");
+
+        // Re-register the task if we have a new task period
+        if (!this.taskPeriod.equals(oldTaskPeriod)) {
+            this.task.cancel();
+            this.task = getServer().getScheduler().runTaskTimer(this, this::doAfkCheck, 20L * 10L, this.taskPeriod);
+        }
     }
 
     @Override
