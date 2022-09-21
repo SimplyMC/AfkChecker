@@ -8,8 +8,15 @@ commands:
     description: Sets the player as afk
     permission: afkchecker.reload
     usage: "Did you mean: /afkchecker reload"
+  afkinfo:
+    description: Displays info about who is AFK
+    permission: afkchecker.info
+    usage: "Usage: /afkinfo"
 
 permissions:
   afkchecker.reload:
     description: "Allows players to reload afkchecker config"
+    default: op
+  afkchecker.info:
+    description: "Allows a player to run /afkinfo"
     default: op

@@ -7,6 +7,9 @@ sendNotice: true
 afkNotice: "You've gone AFK"
 activeNotice: "You're no longer AFK"
 
+# THe world to use to retrieve the current playersSleepingPercentage when displaying the output of /afkinfo
+world: "world"
+
 # Advanced
 # The time between afk checks in ticks, 1 seconds = 20 ticks
 checkPeriod: 60

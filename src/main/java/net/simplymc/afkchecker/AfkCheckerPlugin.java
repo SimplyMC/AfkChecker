@@ -3,6 +3,8 @@ package net.simplymc.afkchecker;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.simplymc.afkchecker.commands.CommandInfo;
+import net.simplymc.afkchecker.commands.CommandReload;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -37,11 +39,16 @@ public final class AfkCheckerPlugin extends JavaPlugin implements Listener {
     private boolean sendNotice;
     private String afkNotice;
     private String activeNotice;
+    private String world;
 
     @Override
     public void onEnable() {
         saveDefaultConfig();
         reloadConfigValues();
+
+        // Register commands
+        getCommand("afkchecker").setExecutor(new CommandReload(this));
+        getCommand("afkinfo").setExecutor(new CommandInfo(this));
 
         // Run location check every 5 seconds
         this.task = getServer().getScheduler().runTaskTimer(this, this::doAfkCheck, 20L * 10L, this.taskPeriod);
@@ -54,34 +61,22 @@ public final class AfkCheckerPlugin extends JavaPlugin implements Listener {
         this.task.cancel();
     }
 
-    private void reloadConfigValues() {
+    public void reloadConfigValues() {
         FileConfiguration config = getConfig();
         this.afkDuration = (long) config.getInt("afkDuration");
         this.afkSuffix = config.getString("afkSuffix");
         this.sendNotice = config.getBoolean("sendNotice");
         this.afkNotice = config.getString("afkNotice");
         this.activeNotice = config.getString("activeNotice");
+        this.world = config.getString("world", "world");
         Long oldTaskPeriod = this.taskPeriod;
         this.taskPeriod = (long) config.getInt("checkPeriod");
 
         // Re-register the task if we have a new task period
-        if (!this.taskPeriod.equals(oldTaskPeriod)) {
+        if (!this.taskPeriod.equals(oldTaskPeriod) && this.task != null) {
             this.task.cancel();
             this.task = getServer().getScheduler().runTaskTimer(this, this::doAfkCheck, 20L * 10L, this.taskPeriod);
         }
-    }
-
-    @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (args.length != 0 && args[0].equals("reload")) {
-            reloadConfig();
-            reloadConfigValues();
-
-            sender.sendMessage("Reloaded!");
-            return true;
-        }
-
-        return false;
     }
 
     @EventHandler
@@ -170,5 +165,13 @@ public final class AfkCheckerPlugin extends JavaPlugin implements Listener {
         this.afkPlayers.remove(uuid);
         this.lastLocationMap.remove(uuid);
         this.lastActivityMap.remove(uuid);
+    }
+
+    public ArrayList<UUID> getAfkPlayers() {
+        return afkPlayers;
+    }
+
+    public String getWorld() {
+        return world;
     }
 }
